@@ -1,7 +1,7 @@
 import random
 import pandas as pd
 
-df = pd.read_csv("C:/Users/checc/OneDrive/Desktop/Progetto Python/Elenco-comuni-italiani.csv" ,
+df = pd.read_csv("Elenco-comuni-italiani.csv" ,
                  encoding="latin1", sep=";")
 consonants = "bcdfghjklmnpqrstvwxyz"
 
