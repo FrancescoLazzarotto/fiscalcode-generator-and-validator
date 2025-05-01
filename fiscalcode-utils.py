@@ -1,8 +1,13 @@
-import random
 import pandas as pd
 
-df = pd.read_csv("Elenco-comuni-italiani.csv" ,
+try:
+    df = pd.read_csv("C:/Users/checc/OneDrive/Desktop/Progetto Python/Elenco-comuni-italiani.csv" ,
                  encoding="latin1", sep=";")
+
+except FileNotFoundError:
+    print("File CSV non trovato. Verifica il percorso.")
+    exit()
+    
 consonants = "bcdfghjklmnpqrstvwxyz"
 
 
@@ -13,11 +18,6 @@ def genera_codici_catastali(comune, df):
         return riga.iloc[0]["Codice Catastale del comune"]
     else:
         return "XXXX"
-
-
-def genera_ultima_lettera():
-    random_letter = chr(random.randint(ord('A'), ord('Z')))
-    return random_letter
 
 
 def genera_cognome(cognome):
@@ -72,6 +72,58 @@ def giorno_cf(data_nascita, sesso):
         giorno_donna = str(giorno_donna) 
         return giorno_donna 
 
+
+
+
+
+def calcola_ultima_lettera(codice_fiscale):
+    """
+    L'ultima lettera segue un algoritmo specifico: 
+    Convertire i caratteri in numeri: Ogni carattere del Codice Fiscale viene convertito in un numero in base alla posizione (pari o dispari) 
+
+    Calcolare la somma ponderata:
+    I caratteri nelle posizioni pari (come 2, 4, 6, ...) vengono mappati ai valori della colonna "Valore pari".
+    I caratteri nelle posizioni dispari (come 1, 3, 5, ...) vengono mappati ai valori della colonna "Valore dispari".
+
+    Somma e diviso 26:
+    Sommiamo tutti i valori ottenuti dalla conversione dei caratteri e poi calcoliamo il resto della divisione per 26.
+    Il resto della divisione viene usato per determinare la lettera attraverso una tabella di conversione
+    """
+    valori_pari = {
+        '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 
+        'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9, 
+        'K': 10, 'L': 11, 'M': 12, 'N': 13, 'O': 14, 'P': 15, 'Q': 16, 'R': 17, 'S': 18, 
+        'T': 19, 'U': 20, 'V': 21, 'W': 22, 'X': 23, 'Y': 24, 'Z': 25
+    }
+    
+    valori_dispari = {
+        '0': 1, '1': 0, '2': 5, '3': 7, '4': 9, '5': 13, '6': 15, '7': 17, '8': 19, '9': 21, 
+        'A': 1, 'B': 0, 'C': 5, 'D': 7, 'E': 9, 'F': 13, 'G': 15, 'H': 17, 'I': 19, 'J': 21, 
+        'K': 2, 'L': 4, 'M': 18, 'N': 20, 'O': 11, 'P': 3, 'Q': 6, 'R': 8, 'S': 12, 'T': 14, 
+        'U': 16, 'V': 10, 'W': 22, 'X': 25, 'Y': 24, 'Z': 23
+    }
+    
+    lettere_di_controllo = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+                           'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    
+    somma = 0
+    
+    for i, char in enumerate(codice_fiscale):  
+        char = char.upper()
+        pos_i = i + 1 
+        
+        if pos_i % 2 == 1: 
+            somma += valori_dispari.get(char, 0)
+        else: 
+            somma += valori_pari.get(char, 0)
+
+    resto = somma % 26
+    lettera_controllo = lettere_di_controllo[resto]  
+    return lettera_controllo
+   
+
+
+
 def genera_cf(cognome, nome, sesso, data_nascita, comune):
     cognome = genera_cognome(cognome)
     nome = genera_nome(nome)
@@ -79,8 +131,9 @@ def genera_cf(cognome, nome, sesso, data_nascita, comune):
     mese = mese_cf(data_nascita)
     giorno = giorno_cf(data_nascita, sesso)
     comune = genera_codici_catastali(comune, df)
-    lettera_finale = genera_ultima_lettera()
-    codice_fiscale = cognome + nome + anno + mese + giorno + comune + lettera_finale
+    codice_fiscale = cognome + nome + anno + mese + giorno + comune
+    ultima_lettera = calcola_ultima_lettera(codice_fiscale)
+    codice_fiscale += ultima_lettera
     codice_fiscale = codice_fiscale.upper()
     return codice_fiscale
     
