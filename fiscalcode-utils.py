@@ -1,4 +1,3 @@
-
 import random
 import pandas as pd
 
@@ -22,23 +21,25 @@ def genera_ultima_lettera():
 
 
 def genera_cognome(cognome):
-    consonants_local = " "
+    consonants_local = ""
     for i in cognome:
         if i in consonants:
             consonants_local += i
-    return consonants_local[0:4]
+    return consonants_local[0:3]
 
 
 def genera_nome(nome):
-    consonants_local = " "
+    consonants_local = ""
     for i in nome:
         if i in consonants:
             consonants_local += i
-    consonants_piu_4 = consonants_local[1] + consonants_local[3] + consonants_local[4]
+    
     if len(consonants_local) >= 4:
+        consonants_piu_4 = consonants_local[0] + consonants_local[2] + consonants_local[3]
         return consonants_piu_4
     else:
-        return consonants_local[0:4]
+        return consonants_local.ljust(3, 'X')
+    
 def anno_cf (data_nascita):
     anno = data_nascita[8:] 
     return anno  
@@ -80,6 +81,7 @@ def genera_cf(cognome, nome, sesso, data_nascita, comune):
     comune = genera_codici_catastali(comune, df)
     lettera_finale = genera_ultima_lettera()
     codice_fiscale = cognome + nome + anno + mese + giorno + comune + lettera_finale
+    codice_fiscale = codice_fiscale.upper()
     return codice_fiscale
     
     
@@ -152,8 +154,8 @@ def main():
             continue
 
         elif scelta == 1:
-            nome = input("Inserisci il tuo nome: ")
-            cognome = input("Inserisci il tuo cognome: ")
+            nome = input("Inserisci il tuo nome: ").lower()
+            cognome = input("Inserisci il tuo cognome: ").lower()
             data_nascita = input("Inserisci la tua data di nascita nel formato (gg/mm/aaaa): ")
 
             while True:
