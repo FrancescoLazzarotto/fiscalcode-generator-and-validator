@@ -24,6 +24,7 @@ The validator checks whether a given fiscal code is syntactically correct based 
 ### Requirements
 - Python 3.7 or higher
 - `pandas` library
+- `random` library
 
 ### Run it
 
