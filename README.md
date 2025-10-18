@@ -19,18 +19,3 @@ The validator checks whether a given fiscal code is syntactically correct based 
 
 ---
 
-## How to use it
-
-### Requirements
-- Python 3.7 or higher
-- `pandas` library
-- `random` library
-
-### Run it
-
-Clone the repository and install dependencies:
-
-```bash
-git clone https://github.com/yourusername/fiscalcode-utils.git
-cd fiscalcode-utils
-pip install -r requirements.txt
